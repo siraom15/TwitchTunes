@@ -265,7 +265,7 @@ class Bot(commands.Bot):
                 else:
                     sp.add_to_queue(song_uri)
                     await ctx.send(
-                        f"@{ctx.author.name}, Your song ({song_name} by {', '.join(song_artists_names)}) [ {data['external_urls']['spotify']} ] has been added to the queue!"
+                        f"@{ctx.author.name}, Your song ({song_name} by {', '.join(song_artists_names)}) has been added to the queue!"
                     )
 
 
