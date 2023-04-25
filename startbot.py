@@ -97,7 +97,7 @@ class Bot(commands.Bot):
     @commands.command(name="ping", aliases=["ding"])
     async def ping_command(self, ctx):
         await ctx.send(
-            f":) 🎶 TwitchTunes v{self.version} (Spotify Song Requests) is online!"
+            f"🎶 TwitchTunes moded by @aommiester ออนไลน์อยู่"
         )
 
     @commands.command(name="blacklistuser")
@@ -108,11 +108,11 @@ class Bot(commands.Bot):
             if user not in file["users"]:
                 file["users"].append(user)
                 write_json(file, "blacklist_user")
-                await ctx.send(f"{user} added to blacklist")
+                await ctx.send(f"{user} ถูกเพิ่มลงใน blacklist")
             else:
-                await ctx.send(f"{user} is already blacklisted")
+                await ctx.send(f"{user} อยู่ใน blacklist แล้ว")
         else:
-            await ctx.send("You don't have permission to do that.")
+            await ctx.send("คุณไม่มีสิทธิ์ในการใช้คำสั่งนี้.")
 
     @commands.command(name="unblacklistuser")
     async def unblacklist_user(self, ctx, *, user: str):
@@ -122,11 +122,11 @@ class Bot(commands.Bot):
             if user in file["users"]:
                 file["users"].remove(user)
                 write_json(file, "blacklist_user")
-                await ctx.send(f"{user} removed from blacklist")
+                await ctx.send(f"{user} ถูกลบออกจาก blacklist")
             else:
-                await ctx.send(f"{user} is not blacklisted")
+                await ctx.send(f"{user} ไม่อยู่ใน blacklist")
         else:
-            await ctx.send("You don't have permission to do that.")
+            await ctx.send("คุณไม่มีสิทธิ์ในการใช้คำสั่งนี้.")
 
     @commands.command(name="blacklist", aliases=["blacklistsong", "blacklistadd"])
     async def blacklist_command(self, ctx, *, song_uri: str):
@@ -149,13 +149,13 @@ class Bot(commands.Bot):
 
                 write_json(jscon, "blacklist")
 
-                await ctx.send(f"Added {track_name} to blacklist.")
+                await ctx.send(f"เพลง {track_name} ถูกเพิ่มลงใน blacklist")
 
             else:
-                await ctx.send("Song is already blacklisted.")
+                await ctx.send("เพลงนี้อยู่ใน blacklist แล้ว")
 
         else:
-            await ctx.send("You are not authorized to use this command.")
+            await ctx.send("คุณไม่มีสิทธิ์ในการใช้คำสั่งนี้.")
 
     @commands.command(
         name="unblacklist", aliases=["unblacklistsong", "blacklistremove"]
@@ -174,12 +174,12 @@ class Bot(commands.Bot):
             if song_uri in jscon["blacklist"]:
                 jscon["blacklist"].remove(song_uri)
                 write_json(jscon, "blacklist")
-                await ctx.send("Removed that song from the blacklist.")
+                await ctx.send("เพลงถูกลบออกจาก blacklist")
 
             else:
-                await ctx.send("Song is not blacklisted.")
+                await ctx.send("เพลงนี้ไม่อยู่ใน blacklist")
         else:
-            await ctx.send("You are not authorized to use this command.")
+            await ctx.send("คุณไม่มีสิทธิ์ในการใช้คำสั่งนี้.")
 
     @commands.command(name="np", aliases=["nowplaying", "song"])
     async def np_command(self, ctx):
@@ -187,7 +187,7 @@ class Bot(commands.Bot):
         song_artists = data["item"]["artists"]
         song_artists_names = [artist["name"] for artist in song_artists]
         await ctx.send(
-            f"🎶Now Playing - {data['item']['name']} by {', '.join(song_artists_names)}"
+            f"🎶กำลังเล่น - {data['item']['name']} - {', '.join(song_artists_names)}"
         )
 
     @commands.command(
@@ -208,7 +208,7 @@ class Bot(commands.Bot):
 
             songs.append(song["track"]["name"] + " - " + song_artists)
 
-        await ctx.send("Recently Played: " + " | ".join(songs))
+        await ctx.send("กำลังเล่น: " + " | ".join(songs))
 
     @commands.command(name="songrequest", aliases=["sr", "addsong"])
     async def songrequest_command(self, ctx, *, song: str):
@@ -226,15 +226,15 @@ class Bot(commands.Bot):
                 else:
                     await self.chat_song_request(ctx, song, song_uri, album=False)
             else:
-                await ctx.send(f"@{ctx.author.name} you should be a VIP, Mod to use this command.")
+                await ctx.send(f"@{ctx.author.name} คุณต้องเป็น VIP/Mod เพื่อการใช้คำสั่งนี้")
                 return
         except:
-            await ctx.send(f"🎶Song not found.")
+            await ctx.send(f"⛔หาเพลงไม่เจอ/ยังไม่ได้เปิด spotify client กรุณาลองใหม่อีกครั้ง⛔")
 
     async def chat_song_request(self, ctx, song, song_uri, album: bool):
         blacklisted_users = read_json("blacklist_user")["users"]
         if ctx.author.name.lower() in blacklisted_users:
-            await ctx.send("You are blacklisted from requesting songs.")
+            await ctx.send("คุณถูกแบนจากการใช้งานคำสั่งนี้")
         else:
             jscon = read_json("blacklist")
 
@@ -258,14 +258,14 @@ class Bot(commands.Bot):
 
             if song_uri != "not found":
                 if song_id in jscon["blacklist"]:
-                    await ctx.send("That song is blacklisted.")
+                    await ctx.send("เพลงอยู่ในเบล็คลิสต์ ไม่สามารถเพิ่มเข้าสู่คิวได้")
 
                 elif duration > 17:
-                    await ctx.send("Send a shorter song please! :)")
+                    await ctx.send("เพลงยาวเกิน 17 นาที ไม่สามารถเพิ่มเข้าสู่คิวได้")
                 else:
                     sp.add_to_queue(song_uri)
                     await ctx.send(
-                        f"@{ctx.author.name}, Your song ({song_name} by {', '.join(song_artists_names)}) has been added to the queue!"
+                        f"@{ctx.author.name}, เพิ่ม ({song_name} - {', '.join(song_artists_names)}) เข้าสู่คิวแล้ว"
                     )
 
 
