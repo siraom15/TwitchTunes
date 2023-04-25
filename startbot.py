@@ -265,7 +265,7 @@ class Bot(commands.Bot):
                 else:
                     sp.add_to_queue(song_uri)
                     await ctx.send(
-                        f"@{ctx.author.name}, เพิ่ม ({song_name} - {', '.join(song_artists_names)}) เข้าสู่คิวแล้ว"
+                        f"@{ctx.author.name} เพิ่ม ({song_name} - {', '.join(song_artists_names)}) เข้าสู่คิวแล้ว"
                     )
 
 
